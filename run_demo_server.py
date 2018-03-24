@@ -8,10 +8,13 @@ import cv2
 import numpy as np
 import uuid
 import json
+import pytesseract
+from PIL import Image, ImageFilter
 
 import functools
 import logging
 import collections
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -160,10 +163,24 @@ def index():
 
 
 def draw_illu(illu, rst):
+    i = 0
     for t in rst['text_lines']:
         d = np.array([t['x0'], t['y0'], t['x1'], t['y1'], t['x2'],
                       t['y2'], t['x3'], t['y3']], dtype='int32')
         d = d.reshape(-1, 2)
+        s, q = np.amax(d, axis=0)
+        p, t = np.amin(d, axis=0)
+        w = s-p
+        h = q-t
+        filename = "./imcache/{}.png".format(str(os.getpid())+"_"+str(i))
+        this_roi = illu[q:q+h, p:p+w]
+        gray = cv2.cvtColor(this_roi, cv2.COLOR_BGR2GRAY)
+        gray = cv2.medianBlur(gray, 3) # median blur on ROI
+        cv2.imwrite(filename, gray)
+        text = pytesseract.image_to_string(Image.open(filename), lang='hin') # for hindi only
+        with open("./text/extractedtext.txt", "a") as f:
+            f.write(text+"\n")
+        i += 1
         cv2.polylines(illu, [d], isClosed=True, color=(255, 255, 0))
     return illu
 
@@ -180,6 +197,7 @@ def save_result(img, rst):
     # save illustration
     output_path = os.path.join(dirpath, 'output.png')
     cv2.imwrite(output_path, draw_illu(img.copy(), rst))
+    # at this point all ROIs got saved
 
     # save json data
     output_path = os.path.join(dirpath, 'result.json')
@@ -211,7 +229,7 @@ def main():
     global checkpoint_path
     parser = argparse.ArgumentParser()
     parser.add_argument('--port', default=8769, type=int)
-    parser.add_argument('--checkpoint-path', default=checkpoint_path)
+    parser.add_argument('--checkpoint_path', default=checkpoint_path)
     parser.add_argument('--debug', action='store_true')
     args = parser.parse_args()
     checkpoint_path = args.checkpoint_path
@@ -225,4 +243,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

@@ -11,15 +11,13 @@ ap.add_argument("-p", "--preprocess", type=str, default="thresh",
 	help="type of preprocessing to be done")
 args = vars(ap.parse_args())
 
-
 # image = Image.open(args["image"])
 # gray = image.convert('1')
 
 image = cv2.imread(args["image"])
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 if args["preprocess"] == "thresh":
-	gray = cv2.threshold(gray, 0, 255,
-		cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
+	gray = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
 
 elif args["preprocess"] == "blur":
 	gray = cv2.medianBlur(gray, 3)
