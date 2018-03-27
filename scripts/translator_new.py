@@ -11,7 +11,7 @@ from googletrans import Translator
 
 # india.txt contains the output coming from customised ocr , languages contained in india.txt may vary from english , hindi , tamil , urdu , bengali
 separators = [u"।", u",", u"."]
-text = open("india.txt").read()
+text = open("./text/extractedtext.txt").read()
 
 #This converts the encoded text to an internal unicode object, where
 # all characters are properly recognized as an entity
@@ -35,8 +35,8 @@ for word in words:
         output += word +" "
     counter += 1
 
-#detect(output) will return the standard language code of the text in india.txt , if language in india.txt is bengali then it will return 'ben' 
-#for hindi it will return 'hin' etc  
+#detect(output) will return the standard language code of the text in india.txt , if language in india.txt is bengali then it will return 'ben'
+#for hindi it will return 'hin' etc
 
 print("Input from OCR")
 print (output)
