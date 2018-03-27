@@ -18,7 +18,7 @@ install tesseract-ocr
 
 Get the trained data files, and cube files for reading hindi.
 
-#`wget https://raw.githubusercontent.com/tesseract-ocr/tessdata/3.04.00/hin.cube.bigrams https://github.com/tesseract-ocr/tessdata/raw/3.04.00/hin.cube.fold https://github.com/tesseract-ocr/tessdata/raw/3.04.00/hin.cube.lm https://github.com/tesseract-ocr/tessdata/raw/3.04.00/hin.cube.nn https://github.com/tesseract-ocr/tessdata/raw/3.04.00/hin.cube.params https://github.com/tesseract-ocr/tessdata/raw/3.04.00/hin.cube.word-freq https://github.com/tesseract-ocr/tessdata/raw/3.04.00/hin.tesseract_cube.nn https://github.com/tesseract-ocr/tessdata/raw/4.00/hin.traineddata`
+# `wget https://raw.githubusercontent.com/tesseract-ocr/tessdata/3.04.00/hin.cube.bigrams https://github.com/tesseract-ocr/tessdata/raw/3.04.00/hin.cube.fold https://github.com/tesseract-ocr/tessdata/raw/3.04.00/hin.cube.lm https://github.com/tesseract-ocr/tessdata/raw/3.04.00/hin.cube.nn https://github.com/tesseract-ocr/tessdata/raw/3.04.00/hin.cube.params https://github.com/tesseract-ocr/tessdata/raw/3.04.00/hin.cube.word-freq https://github.com/tesseract-ocr/tessdata/raw/3.04.00/hin.tesseract_cube.nn https://github.com/tesseract-ocr/tessdata/raw/4.00/hin.traineddata`
 
 `wget https://github.com/indic-ocr/tessdata/blob/master/hin/hin.traineddata`
 
