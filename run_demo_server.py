@@ -239,7 +239,7 @@ def main():
             'Checkpoint `{}` not found'.format(args.checkpoint_path))
 
     app.debug = args.debug
-    app.run('0.0.0.0', args.port)
+    app.run('0.0.0.0', args.port, debug=True)
 
 if __name__ == '__main__':
     main()
