@@ -27,7 +27,7 @@ filename = "{}.png".format(os.getpid())
 cv2.imwrite(filename, gray)
 # gray.save(str(filename))
 
-text = pytesseract.image_to_string(Image.open(filename), lang='ben')
+text = pytesseract.image_to_string(Image.open(filename), lang='hin)
 # os.remove(filename)
 print(text)
 
