@@ -137,7 +137,7 @@ def get_predictor(checkpoint_path):
             'rtparams': rtparams,
             'timing': timer,
         }
-        ret.update(get_host_info())
+        #ret.update(get_host_info())
         return ret
 
 
@@ -187,7 +187,9 @@ def draw_illu(illu, rst):
         gray = cv2.cvtColor(this_roi, cv2.COLOR_BGR2GRAY)
         gray = cv2.GaussianBlur(gray,(5, 5), 0) # median blur on ROI
         cv2.imwrite(filename, gray)
-        text = pytesseract.image_to_string(Image.open(filename), lang='hin') # for hindi only
+        tessdata_dir_config = '--tessdata-dir "/usr/local/Cellar/tesseract/3.05.01/share/tessdata"'
+
+        text = pytesseract.image_to_string(Image.open(filename), lang='hin',config=tessdata_dir_config) # for hindi only
         # os.remove(filename)
         texfile = "./text/extractedtext_{}.txt".format(str(os.getpid()))
         with codecs.open(texfile, "a", encoding="utf8") as f:
