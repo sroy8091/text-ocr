@@ -226,6 +226,10 @@ def save_result(img, rst):
     im = np.multiply(im, ones)
     im = (255-im)
     cv2.imwrite(os.path.join(dirpath, 'processed.png'), im)
+    tessdata_dir_config = '--tessdata-dir "/usr/share/tesseract-ocr/tessdata"'
+    print(os.path.join(dirpath, 'processed.png'))
+    text = pytesseract.image_to_string(Image.open(os.path.join(dirpath, 'processed.png')), lang='hin',config=tessdata_dir_config) # for hindi only
+    print(text)
     # save illustration
     output_path = os.path.join(dirpath, 'output.png')
     cv2.imwrite(output_path, draw_illu(img.copy(), rst))
