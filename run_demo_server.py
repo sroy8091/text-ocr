@@ -173,28 +173,28 @@ def draw_illu(illu, rst):
         d = np.array([t['x0'], t['y0'], t['x1'], t['y1'], t['x2'],
                       t['y2'], t['x3'], t['y3']], dtype='int32')
         d = d.reshape(-1, 2)
-        maxx, maxy = np.amax(d, axis=0)
-        minx, miny = np.amin(d, axis=0)
-        w = maxx-minx
-        h = maxy-miny
-        x = minx - int(0.01*w_dil*width)
-        xx = maxx + int(0.01*w_dil*width)
-        y = miny - int(0.01*h_dil*height)
-        yy = maxy + int(0.01*h_dil*height)
-        # ones[y:yy, x:xx]=[1,1,1]
-        filename = "./imcache/{}.png".format(str(os.getpid())+"_"+str(i))
-        this_roi = illu[y:yy, x:xx]
-        gray = cv2.cvtColor(this_roi, cv2.COLOR_BGR2GRAY)
-        gray = cv2.GaussianBlur(gray,(5, 5), 0) # median blur on ROI
-        cv2.imwrite(filename, gray)
-        tessdata_dir_config = '--tessdata-dir "/usr/local/Cellar/tesseract/3.05.01/share/tessdata"'
-
-        text = pytesseract.image_to_string(Image.open(filename), lang='hin',config=tessdata_dir_config) # for hindi only
-        # os.remove(filename)
-        texfile = "./text/extractedtext_{}.txt".format(str(os.getpid()))
-        with codecs.open(texfile, "a", encoding="utf8") as f:
-            f.write(text+"\n")
-        i += 1
+        # maxx, maxy = np.amax(d, axis=0)
+        # minx, miny = np.amin(d, axis=0)
+        # w = maxx-minx
+        # h = maxy-miny
+        # x = minx - int(0.01*w_dil*width)
+        # xx = maxx + int(0.01*w_dil*width)
+        # y = miny - int(0.01*h_dil*height)
+        # yy = maxy + int(0.01*h_dil*height)
+        # # ones[y:yy, x:xx]=[1,1,1]
+        # filename = "./imcache/{}.png".format(str(os.getpid())+"_"+str(i))
+        # this_roi = illu[y:yy, x:xx]
+        # gray = cv2.cvtColor(this_roi, cv2.COLOR_BGR2GRAY)
+        # gray = cv2.GaussianBlur(gray,(5, 5), 0) # median blur on ROI
+        # cv2.imwrite(filename, gray)
+        # tessdata_dir_config = '--tessdata-dir "/usr/share/tesseract-ocr/tessdata"'
+        #
+        # text = pytesseract.image_to_string(Image.open(filename), lang='hin',config=tessdata_dir_config) # for hindi only
+        # # os.remove(filename)
+        # texfile = "./text/extractedtext_{}.txt".format(str(os.getpid()))
+        # with codecs.open(texfile, "a", encoding="utf8") as f:
+        #     f.write(text+"\n")
+        # i += 1
         cv2.polylines(illu, [d], isClosed=True, color=(255, 255, 0))
     return illu
 
@@ -204,10 +204,28 @@ def save_result(img, rst):
     dirpath = os.path.join(config.SAVE_DIR, session_id)
     os.makedirs(dirpath)
 
+    w_dil = 5 # Dilation of width in percentage of width
+    h_dil = 2 # Dilation of height in percentage of height
+
     # save input image
     output_path = os.path.join(dirpath, 'input.png')
     cv2.imwrite(output_path, img)
-
+    im = cv2.imread(output_path)
+    width = im.shape[1]
+    height = im.shape[0]
+    ones = np.zeros((height, width, 3))
+    data = rst
+    for box in data['text_lines']:
+        x0,x1, x2, x3 = int(box['x0']), int(box['x1']), int(box['x2']), int(box['x3'])
+        x = min(x0,x1,x2,x3)-int(0.01*w_dil*width)
+        xx = max(x0,x1,x2,x3)+int(0.01*w_dil*width)
+        y0,y1, y2, y3 = int(box['y0']), int(box['y1']), int(box['y2']), int(box['y3'])
+        y = min(y0,y1,y2,y3)-int(0.01*h_dil*height)
+        yy = max(y0,y1,y2,y3)+int(0.01*h_dil*height)
+        ones[y:yy, x:xx]=[1,1,1]
+    im = np.multiply(im, ones)
+    im = (255-im)
+    cv2.imwrite(os.path.join(dirpath, 'processed.png'), im)
     # save illustration
     output_path = os.path.join(dirpath, 'output.png')
     cv2.imwrite(output_path, draw_illu(img.copy(), rst))
@@ -242,7 +260,7 @@ def index_post():
 def main():
     global checkpoint_path
     parser = argparse.ArgumentParser()
-    parser.add_argument('--port', default=8769, type=int)
+    parser.add_argument('--port', default=8001, type=int)
     parser.add_argument('--checkpoint_path', default=checkpoint_path)
     parser.add_argument('--debug', action='store_true')
     args = parser.parse_args()
