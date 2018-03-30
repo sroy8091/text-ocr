@@ -17,6 +17,7 @@
 			<script src="../static/css/materialize/js/materialize.js"></script>
 			<link rel="stylesheet" href="../static/css/materialize/css/materialize.min.css"> 
 		<link rel="stylesheet" href="../static/js/leaflet.css">
+		<script src="../static/js/bodymovin.js"></script>
 	
  	<!-- <link rel="stylesheet" href="https://www.cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
 
@@ -58,7 +59,14 @@
 
 												</div>
 												<script>
-										
+														var animation = bodymovin.loadAnimation({
+														container: document.getElementById('fulls'),
+														renderer: 'svg',
+														loop: true,
+														autoplay: true,
+														path: 'data.json'
+														});
+
 														function addMap(){
 															
 																$('.mapouter').removeClass('hide');
@@ -67,7 +75,7 @@
 																var x=setTimeout(function(){
 																	$('#fulls').hide();
 
-																},2000)
+																},3000)
 
 																}</script>
 												
